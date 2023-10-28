@@ -30,7 +30,6 @@ export default function Movies() {
       let obj = Object.values(data);
       obj = obj.filter((ob) => ob.email == email);
       setUser(obj);
-      console.log(obj);
     });
     const options = {
       method: "GET",
@@ -114,6 +113,7 @@ export default function Movies() {
                 Categories
               </Text>
               <ScrollView
+                nestedScrollEnabled={true}
                 contentContainerStyle={{ gap: 20 }}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
@@ -127,15 +127,80 @@ export default function Movies() {
               <Text className="text-lg font-medium text-custom-lightgrey">
                 Movies
               </Text>
-              <ScrollView
-                className="mt-10"
-                contentContainerStyle={{ alignItems: "center", gap: 20 }}
-              >
+              <View className="flex-row flex-wrap">
                 {movies.map((movie) => {
-                  const { original_title, id, backdrop_path, release_date } =
-                    movie;
+                  const {
+                    original_title,
+                    id,
+                    backdrop_path,
+                    release_date,
+                    vote_average,
+                  } = movie;
+
+                  return (
+                    <View className="w-[50%] p-2">
+                      <ItemCard
+                        type="movie"
+                        vote={vote_average}
+                        key={id}
+                        id={id}
+                        title={original_title}
+                        img={backdrop_path}
+                        date={release_date}
+                      />
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+            <View>
+              <Text className="text-lg font-medium text-custom-lightgrey">
+                TV Shows
+              </Text>
+              <View className="flex-row flex-wrap">
+                {tvShows.map((tv) => {
+                  const {
+                    original_name,
+                    id,
+                    backdrop_path,
+                    release_date,
+                    vote_average,
+                  } = tv;
+                  return (
+                    <View className="w-[50%] p-2">
+                      <ItemCard
+                        type="tv"
+                        vote={vote_average}
+                        key={id}
+                        id={id}
+                        title={original_name}
+                        img={backdrop_path}
+                        date={release_date}
+                      />
+                    </View>
+                  );
+                })}
+              </View>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </LinearGradient>
+  );
+}
+
+{
+  /* {movies.map((movie) => {
+                  const {
+                    original_title,
+                    id,
+                    backdrop_path,
+                    release_date,
+                    vote_average,
+                  } = movie;
                   return (
                     <ItemCard
+                      vote={vote_average}
                       key={id}
                       id={id}
                       title={original_title}
@@ -143,13 +208,5 @@ export default function Movies() {
                       date={release_date}
                     />
                   );
-                })}
-                {console.log(movies)}
-              </ScrollView>
-            </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </LinearGradient>
-  );
+                })} */
 }
