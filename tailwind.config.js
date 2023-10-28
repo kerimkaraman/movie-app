@@ -13,6 +13,7 @@ module.exports = {
         "custom-lightgrey": "#D9D9D9",
         "custom-green": "#0FC000",
         "custom-yellow": "#E4CB44",
+        "custom-verylightgrey": "#373535",
       },
     },
   },

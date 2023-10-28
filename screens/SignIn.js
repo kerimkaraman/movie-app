@@ -1,10 +1,30 @@
 import { View, Text, SafeAreaView, TextInput, Pressable } from "react-native";
 import React, { useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { AUTH } from "../firebaseConfig";
+import { useSelector, useDispatch } from "react-redux";
+import { updateEmail, updatePassword } from "../store/signupSlice";
 
 export default function SignIn({ navigation }) {
   const handleSwitch = () => {
     navigation.navigate("Signup");
+  };
+  const { email, password } = useSelector((state) => state.signup);
+  const dispatch = useDispatch();
+  const handleLogin = () => {
+    const auth = AUTH;
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+    navigation.navigate("Homepage", { email: email });
   };
 
   return (
@@ -24,16 +44,23 @@ export default function SignIn({ navigation }) {
             </View>
             <View className="w-[80%] gap-y-6 mx-auto">
               <TextInput
-                className="bg-custom-darkblue p-3 pb-4 text-lg rounded-lg"
+                autoCapitalize="none"
+                onChangeText={(val) => dispatch(updateEmail(val))}
+                className="bg-custom-darkblue p-3 pb-4 text-lg rounded-lg text-white"
                 placeholder="Email"
                 placeholderTextColor="#D9D9D9"
               />
               <TextInput
-                className="bg-custom-darkblue p-3 pb-4 text-lg rounded-lg"
+                secureTextEntry={true}
+                onChangeText={(val) => dispatch(updatePassword(val))}
+                className="bg-custom-darkblue p-3 pb-4 text-lg rounded-lg text-white"
                 placeholder="Şifre"
                 placeholderTextColor="#D9D9D9"
               />
-              <Pressable className="bg-[#F10E49] py-3 rounded-lg">
+              <Pressable
+                onPress={handleLogin}
+                className="bg-[#F10E49] py-3 rounded-lg"
+              >
                 <Text className="text-xl text-custom-lightgrey text-center">
                   Giriş Yap
                 </Text>
