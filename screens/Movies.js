@@ -138,42 +138,13 @@ export default function Movies() {
                   } = movie;
 
                   return (
-                    <View className="w-[50%] p-2">
+                    <View className="w-[50%] h-[200px] p-2">
                       <ItemCard
                         type="movie"
                         vote={vote_average}
                         key={id}
                         id={id}
                         title={original_title}
-                        img={backdrop_path}
-                        date={release_date}
-                      />
-                    </View>
-                  );
-                })}
-              </View>
-            </View>
-            <View>
-              <Text className="text-lg font-medium text-custom-lightgrey">
-                TV Shows
-              </Text>
-              <View className="flex-row flex-wrap">
-                {tvShows.map((tv) => {
-                  const {
-                    original_name,
-                    id,
-                    backdrop_path,
-                    release_date,
-                    vote_average,
-                  } = tv;
-                  return (
-                    <View className="w-[50%] p-2">
-                      <ItemCard
-                        type="tv"
-                        vote={vote_average}
-                        key={id}
-                        id={id}
-                        title={original_name}
                         img={backdrop_path}
                         date={release_date}
                       />

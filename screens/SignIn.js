@@ -16,9 +16,7 @@ export default function SignIn({ navigation }) {
     const auth = AUTH;
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
         const user = userCredential.user;
-        // ...
       })
       .catch((error) => {
         const errorCode = error.code;

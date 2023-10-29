@@ -55,9 +55,9 @@ export default function SignUp({ navigation }) {
       namesurname: namesurname,
       email: email,
       password: password,
-      favorites: {},
+      favorites: null,
     });
-    navigation.navigate("Signin");
+    navigation.navigate("Signin", { userID: userID });
   };
 
   return (
