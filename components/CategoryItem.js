@@ -3,10 +3,10 @@ import React from "react";
 
 import { useNavigation } from "@react-navigation/native";
 
-export default function CategoryItem({ name }) {
+export default function CategoryItem({ name, id }) {
   const nav = useNavigation();
   const handleOnPress = () => {
-    nav.navigate("Category", { name: name });
+    nav.navigate("Category", { name: name, id: id });
   };
   return (
     <Pressable

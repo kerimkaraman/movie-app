@@ -5,10 +5,10 @@ import {
   ImageBackground,
   ScrollView,
   Image,
+  Pressable,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
-import MovieDetailsItem from "../components/MovieDetailsItem";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
@@ -24,6 +24,8 @@ export default function MovieDetails({ route }) {
   const handleGoBack = () => {
     nav.goBack();
   };
+
+  useEffect(() => {}, []);
 
   const handleFavorite = () => {
     color === "white" ? setColor("red") : setColor("white");

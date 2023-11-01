@@ -22,10 +22,10 @@ export default function Profile() {
     <LinearGradient style={{ flex: 1 }} colors={["#F10E49", "#13171B"]}>
       {console.log(user)}
       <SafeAreaView>
-        {user.map((userD) => {
+        {user.map((userD, index) => {
           const { namesurname, profile_img } = userD;
           return (
-            <View className="mx-10 mt-5">
+            <View key={index} className="mx-10 mt-5">
               <View className="gap-y-5 items-center">
                 <Image
                   className="w-[100px] object-fill h-[100px] rounded-full"

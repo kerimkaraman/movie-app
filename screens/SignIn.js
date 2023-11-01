@@ -21,6 +21,7 @@ export default function SignIn({ navigation }) {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+        console.log(errorCode, errorMessage);
       });
     navigation.navigate("Homepage", { email: email });
   };

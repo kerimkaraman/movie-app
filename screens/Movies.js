@@ -67,25 +67,6 @@ export default function Movies() {
       .catch(function (error) {
         console.error(error);
       });
-
-    const tvOptions = {
-      method: "GET",
-      url: "https://api.themoviedb.org/3/discover/tv?include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc",
-      headers: {
-        accept: "application/json",
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYTczZmM1ZTExNmU0ZjU4OTllNzExMjBmYTIwZDRkZSIsInN1YiI6IjYyYzE4YWU1MjJlNDgwMGZhOGYxZWMxMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.lv9_uKWjg2nv5o_oszOERscOnwPuLLxgdExnkxrpoTI",
-      },
-    };
-
-    axios
-      .request(tvOptions)
-      .then(function (response) {
-        setTvShows(response.data.results);
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
   }, []);
 
   return (
@@ -119,7 +100,13 @@ export default function Movies() {
                 showsHorizontalScrollIndicator={false}
               >
                 {categories.map((category, index) => {
-                  return <CategoryItem key={index} name={category.name} />;
+                  return (
+                    <CategoryItem
+                      key={index}
+                      name={category.name}
+                      id={category.id}
+                    />
+                  );
                 })}
               </ScrollView>
             </View>
@@ -127,7 +114,7 @@ export default function Movies() {
               <Text className="text-lg font-medium text-custom-lightgrey">
                 Movies
               </Text>
-              <View className="flex-row flex-wrap">
+              <View className="flex-row flex-wrap gap-y-5">
                 {movies.map((movie) => {
                   const {
                     original_title,
