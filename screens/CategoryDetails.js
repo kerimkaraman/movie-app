@@ -5,6 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import ItemCard from "../components/ItemCard";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import WaitScreen from "./WaitScreen";
 
 export default function CategoryDetails({ route }) {
   const { name, id } = route.params;
@@ -35,7 +36,9 @@ export default function CategoryDetails({ route }) {
         console.error(error);
       });
   }, []);
-  return isLoading ? null : (
+  return isLoading ? (
+    <WaitScreen />
+  ) : (
     <LinearGradient style={{ flex: 1 }} colors={["#F10E49", "#13171B"]}>
       <SafeAreaView className="mb-32">
         <View className="flex-row mx-5 items-center justify-start mb-5">

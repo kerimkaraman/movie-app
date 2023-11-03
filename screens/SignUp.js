@@ -48,6 +48,7 @@ export default function SignUp({ navigation }) {
         const errorCode = error.code;
         const errorMessage = error.message;
       });
+
     const db = DATABASE;
     set(ref(db, "users/" + userID), {
       userID: userID,
@@ -55,8 +56,9 @@ export default function SignUp({ navigation }) {
       namesurname: namesurname,
       email: email,
       password: password,
-      favorites: null,
+      favorites: [],
     });
+
     navigation.navigate("Signin", { userID: userID });
   };
 

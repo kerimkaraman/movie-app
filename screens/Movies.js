@@ -19,8 +19,9 @@ export default function Movies() {
   const [movies, setMovies] = useState([]);
   const [user, setUser] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [tvShows, setTvShows] = useState([]);
   const { email } = useSelector((state) => state.signup);
+  const [isUserLoading, setIsUserLoading] = useState(true);
+  const [userID, setUserID] = useState();
 
   useEffect(() => {
     const db = DATABASE;
@@ -40,7 +41,6 @@ export default function Movies() {
           "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmYTczZmM1ZTExNmU0ZjU4OTllNzExMjBmYTIwZDRkZSIsInN1YiI6IjYyYzE4YWU1MjJlNDgwMGZhOGYxZWMxMSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.lv9_uKWjg2nv5o_oszOERscOnwPuLLxgdExnkxrpoTI",
       },
     };
-
     axios
       .request(options)
       .then(function (response) {
@@ -67,6 +67,9 @@ export default function Movies() {
       .catch(function (error) {
         console.error(error);
       });
+    Object.values(user).map((us) => {
+      setUserID(us.userID);
+    });
   }, []);
 
   return (
@@ -123,7 +126,6 @@ export default function Movies() {
                     release_date,
                     vote_average,
                   } = movie;
-
                   return (
                     <View className="w-[50%] h-[200px] p-2">
                       <ItemCard
@@ -134,6 +136,7 @@ export default function Movies() {
                         title={original_title}
                         img={backdrop_path}
                         date={release_date}
+                        userID={userID}
                       />
                     </View>
                   );
@@ -145,26 +148,4 @@ export default function Movies() {
       </SafeAreaView>
     </LinearGradient>
   );
-}
-
-{
-  /* {movies.map((movie) => {
-                  const {
-                    original_title,
-                    id,
-                    backdrop_path,
-                    release_date,
-                    vote_average,
-                  } = movie;
-                  return (
-                    <ItemCard
-                      vote={vote_average}
-                      key={id}
-                      id={id}
-                      title={original_title}
-                      img={backdrop_path}
-                      date={release_date}
-                    />
-                  );
-                })} */
 }

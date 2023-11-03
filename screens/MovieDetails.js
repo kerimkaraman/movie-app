@@ -12,34 +12,44 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
-import { ref, onValue } from "firebase/database";
+import { set, ref, child, push, update, onValue } from "firebase/database";
 import { DATABASE } from "../firebaseConfig";
 
 export default function MovieDetails({ route }) {
-  const { data, cast } = route.params;
+  const { data, cast, userid } = route.params;
   const [movie, setMovie] = useState([data]);
   const [credit, setCredit] = useState([cast.cast]);
   const [color, setColor] = useState("white");
+  const [favs, setFavs] = useState([]);
+  const [isFav, setIsFav] = useState();
   const nav = useNavigation();
   const handleGoBack = () => {
     nav.goBack();
   };
+  useEffect(() => {
+    const db = DATABASE;
+    const favRef = ref(db, "users/" + userid + "favorites");
+    onValue(favRef, (snapshot) => {
+      const data = snapshot.val();
+      setFavs(data);
+    });
+    if (data === null) {
+      return 1;
+    } else {
+    }
+    console.log(userid);
+  }, []);
 
-  useEffect(() => {}, []);
-
-  const handleFavorite = () => {
-    color === "white" ? setColor("red") : setColor("white");
-  };
+  const handleFavorite = () => {};
 
   return (
     <LinearGradient style={{ flex: 1 }} colors={["#F10E49", "#13171B"]}>
       {movie.map((mov) => {
         const {
+          id,
           backdrop_path,
           poster_path,
-          budget,
           title,
-          name,
           runtime,
           status,
           vote_count,
@@ -66,7 +76,24 @@ export default function MovieDetails({ route }) {
                 </View>
                 <View className=" bg-black w-[60px] items-center p-3 rounded-full">
                   <Ionicons
-                    onPress={handleFavorite}
+                    onPress={() => {
+                      const db = DATABASE;
+                      const postData = {
+                        id: id,
+                        backdrop_path: backdrop_path,
+                        poster_path: poster_path,
+                        title: title,
+                        runtime: runtime,
+                        vote_average: vote_average,
+                        overview: overview,
+                      };
+
+                      const updates = {};
+                      updates["/users/" + userid + "/favorites/" + id] =
+                        postData;
+                      color === "white" ? setColor("red") : setColor("white");
+                      return update(ref(db), updates);
+                    }}
                     name="heart"
                     size={36}
                     color={color}
@@ -92,9 +119,12 @@ export default function MovieDetails({ route }) {
               </View>
               <View className="mt-5 p-4 gap-y-2">
                 <View className="flex-row flex-wrap gap-2 mx-auto mb-2 justify-center">
-                  {genres.map((genre) => {
+                  {genres.map((genre, index) => {
                     return (
-                      <View className="border border-custom-lightgrey rounded-2xl px-3 py-1">
+                      <View
+                        key={index}
+                        className="border border-custom-lightgrey rounded-2xl px-3 py-1"
+                      >
                         <Text className="text-custom-lightgrey ">
                           {genre.name}
                         </Text>
@@ -132,7 +162,7 @@ export default function MovieDetails({ route }) {
                       return cr.map((c) => {
                         const { name, id, profile_path } = c;
                         return profile_path == undefined ? null : (
-                          <View className="w-[30%] gap-y-2">
+                          <View key={id} className="w-[30%] gap-y-2">
                             <Image
                               className="w-[100%] object-fill h-[150px]"
                               source={{

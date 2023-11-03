@@ -5,7 +5,7 @@ import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 
-export default function ItemCard({ id, img, title, date, vote }) {
+export default function ItemCard({ id, img, title, vote, userID }) {
   const [data, setData] = useState([]);
   const [cast, setCast] = useState([]);
   const nav = useNavigation();
@@ -50,7 +50,7 @@ export default function ItemCard({ id, img, title, date, vote }) {
   }, []);
 
   const handleOnPress = () => {
-    nav.navigate("MovieDetail", { data: data, cast: cast });
+    nav.navigate("MovieDetail", { data: data, cast: cast, userid: userID });
   };
 
   return (
