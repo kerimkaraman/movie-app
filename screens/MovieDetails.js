@@ -14,35 +14,35 @@ import { useNavigation } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import { set, ref, child, push, update, onValue } from "firebase/database";
 import { DATABASE } from "../firebaseConfig";
+import WaitScreen from "./WaitScreen";
 
 export default function MovieDetails({ route }) {
-  const { data, cast, userid } = route.params;
+  const { data, cast } = route.params;
   const [movie, setMovie] = useState([data]);
   const [credit, setCredit] = useState([cast.cast]);
   const [color, setColor] = useState("white");
   const [favs, setFavs] = useState([]);
   const [isFav, setIsFav] = useState();
+  const [isLoading, setIsLoading] = useState(true);
+  const { userID } = useSelector((state) => state.signup);
+
   const nav = useNavigation();
   const handleGoBack = () => {
     nav.goBack();
   };
   useEffect(() => {
     const db = DATABASE;
-    const favRef = ref(db, "users/" + userid + "favorites");
+    const favRef = ref(db, "users/" + userID + "/favorites");
     onValue(favRef, (snapshot) => {
       const data = snapshot.val();
       setFavs(data);
     });
-    if (data === null) {
-      return 1;
-    } else {
-    }
-    console.log(userid);
+    setIsLoading(false);
   }, []);
 
-  const handleFavorite = () => {};
-
-  return (
+  return isLoading ? (
+    <WaitScreen />
+  ) : (
     <LinearGradient style={{ flex: 1 }} colors={["#F10E49", "#13171B"]}>
       {movie.map((mov) => {
         const {
@@ -87,9 +87,8 @@ export default function MovieDetails({ route }) {
                         vote_average: vote_average,
                         overview: overview,
                       };
-
                       const updates = {};
-                      updates["/users/" + userid + "/favorites/" + id] =
+                      updates["/users/" + userID + "/favorites/" + id] =
                         postData;
                       color === "white" ? setColor("red") : setColor("white");
                       return update(ref(db), updates);

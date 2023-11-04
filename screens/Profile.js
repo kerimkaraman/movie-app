@@ -11,7 +11,7 @@ export default function Profile() {
   const { email } = useSelector((state) => state.signup);
   const [user, setUser] = useState([]);
   const [favs, setFavs] = useState([]);
-  const [userID, setUserID] = useState();
+  const { userID } = useSelector((state) => state.signup);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     async function getData() {
@@ -23,12 +23,9 @@ export default function Profile() {
           let obj = Object.values(data);
           obj = obj.filter((ob) => ob.email == email);
           setUser(obj);
-          user.map((us) => {
-            setUserID(us.userID);
-          });
         });
 
-        if (userID != null || userID != undefined) {
+        if (userID != null && userID != undefined) {
           const favRef = ref(db, "users/" + userID + "/favorites/");
           onValue(favRef, (snapshot) => {
             const data = snapshot.val();
@@ -61,38 +58,41 @@ export default function Profile() {
                   {namesurname}
                 </Text>
               </View>
-              <View>
-                <Text>Favorites</Text>
-                <View>
-                  <ScrollView>
-                    {Object.values(favs).map((fav) => {
-                      const {
-                        original_title,
-                        id,
-                        backdrop_path,
-                        release_date,
-                        vote_average,
-                      } = fav;
-                      return (
-                        <View className="w-[50%] h-[200px] p-2">
-                          <ItemCard
-                            type="movie"
-                            vote={vote_average}
-                            key={id}
-                            id={id}
-                            title={original_title}
-                            img={backdrop_path}
-                            date={release_date}
-                          />
-                        </View>
-                      );
-                    })}
-                  </ScrollView>
-                </View>
-              </View>
             </View>
           );
         })}
+        <View>
+          <Text>Favorites</Text>
+          <View>
+            <ScrollView className="flex-row flex-wwap">
+              {userID != undefined && null
+                ? Object.values(favs).map((fav, index) => {
+                    const {
+                      original_title,
+                      id,
+                      backdrop_path,
+                      release_date,
+                      vote_average,
+                    } = fav;
+
+                    return (
+                      <View key={index} className="w-[50%] h-[200px] p-2">
+                        <ItemCard
+                          type="movie"
+                          vote={vote_average}
+                          key={id}
+                          id={id}
+                          title={original_title}
+                          img={backdrop_path}
+                          date={release_date}
+                        />
+                      </View>
+                    );
+                  })
+                : null}
+            </ScrollView>
+          </View>
+        </View>
       </SafeAreaView>
     </LinearGradient>
   );

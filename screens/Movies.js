@@ -11,17 +11,17 @@ import axios from "axios";
 import { LinearGradient } from "expo-linear-gradient";
 import { ref, onValue } from "firebase/database";
 import { DATABASE } from "../firebaseConfig";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CategoryItem from "../components/CategoryItem";
 import ItemCard from "../components/ItemCard";
+import { updateUserID } from "../store/signupSlice";
 
 export default function Movies() {
   const [movies, setMovies] = useState([]);
   const [user, setUser] = useState([]);
   const [categories, setCategories] = useState([]);
   const { email } = useSelector((state) => state.signup);
-  const [isUserLoading, setIsUserLoading] = useState(true);
-  const [userID, setUserID] = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const db = DATABASE;
@@ -32,6 +32,11 @@ export default function Movies() {
       obj = obj.filter((ob) => ob.email == email);
       setUser(obj);
     });
+    Object.values(user).map((us) => {
+      dispatch(updateUserID(us.userID));
+      console.log(us.userID);
+    });
+
     const options = {
       method: "GET",
       url: "https://api.themoviedb.org/3/genre/movie/list?language=en",
@@ -67,9 +72,6 @@ export default function Movies() {
       .catch(function (error) {
         console.error(error);
       });
-    Object.values(user).map((us) => {
-      setUserID(us.userID);
-    });
   }, []);
 
   return (
@@ -136,7 +138,6 @@ export default function Movies() {
                         title={original_title}
                         img={backdrop_path}
                         date={release_date}
-                        userID={userID}
                       />
                     </View>
                   );

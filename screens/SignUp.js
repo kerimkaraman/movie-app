@@ -59,7 +59,7 @@ export default function SignUp({ navigation }) {
       favorites: [],
     });
 
-    navigation.navigate("Signin", { userID: userID });
+    navigation.navigate("Signin");
   };
 
   return (

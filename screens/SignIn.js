@@ -10,8 +10,8 @@ export default function SignIn({ navigation }) {
   const handleSwitch = () => {
     navigation.navigate("Signup");
   };
-  const { email, password } = useSelector((state) => state.signup);
   const dispatch = useDispatch();
+  const { email, password } = useSelector((state) => state.signup);
   const handleLogin = () => {
     const auth = AUTH;
     signInWithEmailAndPassword(auth, email, password)
