@@ -1,41 +1,60 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ImageBackground,
-  ScrollView,
-  Image,
-  Pressable,
-} from "react-native";
+import { View, Text, ImageBackground, ScrollView, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { useSelector } from "react-redux";
 import { set, ref, child, push, update, onValue } from "firebase/database";
 import { DATABASE } from "../firebaseConfig";
 import WaitScreen from "./WaitScreen";
+import { useSelector } from "react-redux";
 
 export default function MovieDetails({ route }) {
-  const { data, cast } = route.params;
+  const { data, cast, movieId } = route.params;
   const [movie, setMovie] = useState([data]);
   const [credit, setCredit] = useState([cast.cast]);
   const [color, setColor] = useState("white");
   const [favs, setFavs] = useState([]);
-  const [isFav, setIsFav] = useState();
   const [isLoading, setIsLoading] = useState(true);
-  const { userID } = useSelector((state) => state.signup);
+  const [isFav, setIsFav] = useState();
+  const [ready, setReady] = useState(false);
+  const [userID, setUserID] = useState();
+  const [user, setUser] = useState();
+  const { email } = useSelector((state) => state.signup);
 
   const nav = useNavigation();
   const handleGoBack = () => {
     nav.goBack();
   };
-  useEffect(() => {
+
+  function getData() {
     const db = DATABASE;
-    const favRef = ref(db, "users/" + userID + "/favorites");
-    onValue(favRef, (snapshot) => {
+    const userRef = ref(db, "users/");
+    onValue(userRef, (snapshot) => {
       const data = snapshot.val();
-      setFavs(data);
+      let obj = Object.values(data);
+      obj = obj.filter((ob) => ob.email == email);
+      setUser(obj);
+
+      obj.map((ob) => {
+        const userId = ob.userID;
+        setUserID(userId);
+        const favRef = ref(db, "users/" + userId + "/favorites");
+        onValue(favRef, (snapshot) => {
+          const data = snapshot.val();
+          setFavs(data);
+          setIsLoading(false);
+        });
+      });
+    });
+  }
+  useEffect(() => {
+    getData();
+
+    favs.map((fav) => {
+      if (fav.id === movieId) {
+        setIsFav(true);
+        setColor("red");
+      }
     });
     setIsLoading(false);
   }, []);
@@ -44,7 +63,7 @@ export default function MovieDetails({ route }) {
     <WaitScreen />
   ) : (
     <LinearGradient style={{ flex: 1 }} colors={["#F10E49", "#13171B"]}>
-      {movie.map((mov) => {
+      {movie.map((mov, index) => {
         const {
           id,
           backdrop_path,
@@ -58,7 +77,7 @@ export default function MovieDetails({ route }) {
           overview,
         } = mov;
         return (
-          <ScrollView>
+          <ScrollView key={index}>
             <ImageBackground
               className="w-full h-[400px]"
               source={{
@@ -77,21 +96,25 @@ export default function MovieDetails({ route }) {
                 <View className=" bg-black w-[60px] items-center p-3 rounded-full">
                   <Ionicons
                     onPress={() => {
-                      const db = DATABASE;
-                      const postData = {
-                        id: id,
-                        backdrop_path: backdrop_path,
-                        poster_path: poster_path,
-                        title: title,
-                        runtime: runtime,
-                        vote_average: vote_average,
-                        overview: overview,
-                      };
-                      const updates = {};
-                      updates["/users/" + userID + "/favorites/" + id] =
-                        postData;
-                      color === "white" ? setColor("red") : setColor("white");
-                      return update(ref(db), updates);
+                      if (isFav) {
+                        setColor("red");
+                      } else {
+                        setColor("red");
+                        const db = DATABASE;
+                        const postData = {
+                          id: id,
+                          backdrop_path: backdrop_path,
+                          poster_path: poster_path,
+                          title: title,
+                          runtime: runtime,
+                          vote_average: vote_average,
+                          overview: overview,
+                        };
+                        const updates = {};
+                        updates["/users/" + userID + "/favorites/" + id] =
+                          postData;
+                        return update(ref(db), updates);
+                      }
                     }}
                     name="heart"
                     size={36}

@@ -50,7 +50,7 @@ export default function ItemCard({ id, img, title, vote }) {
   }, []);
 
   const handleOnPress = () => {
-    nav.navigate("MovieDetail", { data: data, cast: cast });
+    nav.navigate("MovieDetail", { data: data, cast: cast, movieId: id });
   };
 
   return (
@@ -81,7 +81,7 @@ export default function ItemCard({ id, img, title, vote }) {
                 backgroundColor="#3d5875"
               />
               <Text className="text-custom-green text-lg font-400 shadow-xl">
-                {vote}
+                {vote.toFixed(1)}
               </Text>
             </View>
             <Text className="text-custom-lightgrey text-md font-medium text-center">
