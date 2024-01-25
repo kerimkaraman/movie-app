@@ -24,7 +24,7 @@ export default function Profile() {
       setUser(obj);
 
       obj.map((ob) => {
-        const userId = ob.userID; // Bu satırı ekleyerek userId'yi alın
+        const userId = ob.userID;
         setUserID(userId);
         const favRef = ref(db, "users/" + userId + "/favorites");
         onValue(favRef, (snapshot) => {
